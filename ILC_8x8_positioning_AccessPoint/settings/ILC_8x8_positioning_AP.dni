@@ -33,7 +33,7 @@ TypeViolation=1
 UnspecRange=1
 ActionState=1
 [DebugChecksum]
-Checksum=536552868
+Checksum=1698048981
 [State Storage]
 Control Register=-1
 [Sequencer]
@@ -69,7 +69,9 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Count=0
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\main_ILC_8x8_positioning_AP.c}.246.5" 1 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\main_ILC_8x8_positioning_AP.c}.137.3" 0 0 0 0 "" 0 ""
+Count=2
 [FET]
 Clock mode=38
 Extended Clock mode=1
@@ -91,5 +93,8 @@ SR=0
 all registers=0
 File name=
 [Aliases]
-Count=0
+A0=_ "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\ILC_8x8_positioning_AccessPoint\main_ILC_8x8_positioning_AP.c" "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_AccessPoint\main_ILC_8x8_positioning_AP.c"
+A1=_ "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\drivers\mrfi\radios\family1\mrfi_radio.c" "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\mrfi\radios\family4\mrfi_radio.c"
+A2=_ "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\drivers\mrfi\radios\family1\mrfi_spi.c" ""
+Count=3
 SuppressDialog=0

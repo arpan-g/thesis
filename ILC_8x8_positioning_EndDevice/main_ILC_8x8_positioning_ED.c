@@ -10,7 +10,9 @@
 #include "conf_env_ILC_8x8_positioning_ED.h"
 #include "calibration_function_ILC_8x8_positioning_ED.h"
 
+
 #define SAMPLE_NUM 16
+#define DELTA 2930 
 
 // mrfiPacket_t packet;
 mrfiPacket_t Ft;
@@ -24,9 +26,12 @@ uint16_t rt_vcc = 0;
 uint16_t rt_volt = 0;
 int16_t xn = 0;
 int16_t en = 0;
+uint32_t timer=0;
+volatile uint8_t timer_ack = 0;
 // int16_t dn = 0;
 uint8_t pid_iter = 0;
 uint8_t counter = MAX_TRY;
+uint16_t compare,old_capture,delta;
 volatile uint8_t enable_low_power_delay = 0;
 uint16_t pir_timeout = 0;
 Table local_table;
@@ -48,7 +53,11 @@ uint8_t fast_decrease_cnt = 0;
 volatile uint8_t batt_below_3V = 0;
 static unsigned int my_data[SAMPLE_NUM];
 volatile uint8_t currentTs = TS1SEC;
-uint8_t mac_addr[4] = {0,0,4,3,};
+uint8_t mac_addr[4] = {0,1,7,5};
+uint16_t tic_sec = 0;
+
+
+
 void get_rt_voltage();
 uint8_t check_rt_voltage(uint16_t run_volts_setup);
 void Get_Lux_Reading(mrfiPacket_t * pPacket);
@@ -70,8 +79,8 @@ void close_loop_control();
 uint8_t nac_mrfi_tx_cca(mrfiPacket_t * pPacket, const uint8_t carrier_sel);
 void get_lux_reading_repeat();
 void read_pir();
-
-
+void start_timer();
+void delay_msec(uint8_t miliseconds);
 void low_power_delay(uint16_t tic)
 {
   // PIR interrupt not allowed during LPD
@@ -90,6 +99,7 @@ void low_power_delay(uint16_t tic)
   __bis_SR_register(LPM3_bits + GIE);       // Enter LPM3
   TBCTL &= ~(MC_1);                         // Stop Timer B
   TBCCR0 = TimerTemp;
+   TACCTL0 |= CCIE;
   // P2IFG &= ~0x02;                           // FIXED: P2.1 IFG cleared
   // P2IE |= 0x02;                             // P2.1 interrupt enabled
   occupancy_timeout = occupancy_timeout + tic;
@@ -158,7 +168,7 @@ int main(void)
   // |-------------------------------------|
   // | MAC ID (4xbytes) | Xn@WSP (2xbytes) |
   // |-------------------------------------|
-  packet_uframe.frame[0] = 8 + 10;
+  packet_uframe.frame[0] = 8 + 13;
   char *Flash_Addr;
   Flash_Addr = (char *)0x1169;              // MAC Address is 4 bytes starting from 0x10F0
   packet_uframe.frame[9] = mac_addr[0];
@@ -170,9 +180,9 @@ int main(void)
   // set LFXT1 to the VLO @ 12kHz
   // :( VLO drifts with temperature and supply voltage
   BCSCTL3 |= LFXT1S_2;
-  TACTL = MC_0;
-  TACCTL0 = 0;
-  TACCR0 = SLOW_1SEC;
+  //TACTL = MC_0;
+ // TACCTL0 = 0;
+  //TACCR0 = SLOW_1SEC;
   // TACCR0 = SLOW_1SEC;                      // 1060;  //slow timeout, ~100msec
   TBCTL = MC_0;
   TBCCTL0 = 0;
@@ -217,7 +227,10 @@ int main(void)
   // configure P2.1 as input port before read
   P2REN &= ~BIT1;
   P2DIR &= ~BIT1;
-  
+  MRFI_WakeUp();
+  mrfiSpiWriteReg(CHANNR, PCH);
+  MRFI_RxOn();
+
 
 
   
@@ -225,7 +238,7 @@ int main(void)
 #ifdef LED_INDICATOR
   P1OUT |= 0x01;
 #endif
-  
+
   // Enter low-power listen
   // start_slow_timeout();
   while (1) {
@@ -241,22 +254,21 @@ int main(void)
     create_packet(bit_count);
    
     bit_count++;
-    if(bit_count > 32){
+    
+    if(bit_count > 32 && timer_ack == 1 ){
       tx_to_ap();
-    
-    
-    for (int i = 0; i < 60; i++) {
-       low_power_delay(LPD_1SEC);
-      //low_power_delay(LPD_100MSEC);
-      if (currentTs == TS1SEC) {
-        break;
-      }
     }
-    }else{
-      low_power_delay(LPD_100MSEC);
-    }
+      
     
+    low_power_delay(LPD_100MSEC);
   }
+}
+
+void delay_msec(uint8_t miliseconds)
+{
+    for (tic_sec = 0; tic_sec < miliseconds; tic_sec++) {
+        __delay_cycles(8000);
+    }
 }
 
 void create_packet(uint8_t bit_count){
@@ -268,26 +280,42 @@ void read_pir(){
  
   if (P2IN & BIT1){
     motion_detected = 1; 
-    P1OUT &= 0xFE; //turn off LED red
+   // P1OUT &= 0xFE; //turn off LED red
     return;
   }
-   P1OUT |=0x01;  //turn on LED red
+  // P1OUT |=0x01;  //turn on LED red
    motion_detected = 0;
      
 
+}
+
+void start_timer()
+{
+//  pause_low_power_delay();
+  P1OUT |= 0x01;
+ 	//Enable Interrupts on Timer
+  TACCR0 = SLOW_100MSEC;	//Number of cycles in the timer
+  TACTL = TASSEL_1 + MC_1; //TASSEL_1 use aclk as source of timer MC_1 use up mode timer
+//  continue_low_power_delay();
+  
+  
 }
 
 uint8_t tx_to_ap()
 {
   // TODO: insert PIR sensor output (motion_detected) into packet
   
-     
+     P1OUT &= ~0x02; 
        packet_uframe.frame[13] = 169;
        packet_uframe.frame[14] =  packet_data & 0xff;  
        packet_uframe.frame[15] = packet_data>>8 & 0xff ;  
        packet_uframe.frame[16] = packet_data>>16 & 0xff;
        packet_uframe.frame[17] = packet_data>>24 & 0xff;
-       packet_uframe.frame[18] = 43;
+       packet_uframe.frame[18] = timer & 0xff;  
+       packet_uframe.frame[19] = timer>>8 & 0xff ;  
+       packet_uframe.frame[20] = timer>>16 & 0xff;
+       packet_uframe.frame[21] = timer>>24 & 0xff;
+      
   
 
   
@@ -298,10 +326,11 @@ uint8_t tx_to_ap()
    cca_tx_success = nac_mrfi_tx_cca(&packet_uframe, PCH/*GCH*/);
     // keep RxOn and wait for ack
   __delay_cycles(1e6);
-   P1OUT &= ~0x02; 
+  
     
   } while (cca_tx_success != 1 || ack_flag != 1);
   
+ P1OUT &= ~0x02; 
   cca_tx_success = 0;
   ack_flag = 0;
   
@@ -378,7 +407,7 @@ void get_lux_reading()
   
   P4OUT &= ~(BIT4+BIT6);
   
-  // xn = FC(rt_volt);
+  // xn = FC(rt_volt); 
   xn = rt_vcc - rt_volt;
 }
 
@@ -397,6 +426,7 @@ uint8_t nac_mrfi_tx_cca(mrfiPacket_t * pPacket, const uint8_t carrier_sel)
   MRFI_RxOn();
   
   // stop/reset TimerA for Mrfi_DelayUsec();
+  TACCTL0 = 0;
   taccr0_tmp = TACCR0;
   tactl_tmp = TACTL;
   TACTL = TASSEL_2 + MC_0;
@@ -410,7 +440,7 @@ uint8_t nac_mrfi_tx_cca(mrfiPacket_t * pPacket, const uint8_t carrier_sel)
   // recover TimerA for correct LPL
   TACTL = tactl_tmp;
   TACCR0 = taccr0_tmp;
-  
+  TACCTL0 |= CCIE;
   return mrfi_tx_success;
 }
 
@@ -607,7 +637,7 @@ void MRFI_RxCompleteISR()
   P4OUT |= BIT3;
   // Ft received
   stop_fast_timeout();
-  stop_slow_timeout();
+  //stop_slow_timeout();
   
   mrfiPacket_t packet_ack;
   MRFI_Receive(&packet_ack);
@@ -616,6 +646,11 @@ void MRFI_RxCompleteISR()
   // check if ACK is for me
   /*char *Flash_Addr;
   Flash_Addr = (char *)0x1169;*/
+  if(packet_ack.frame[9] == 0xFA & timer_ack == 0 ){
+      start_timer();
+      timer_ack = 1;
+      
+  }
   if (packet_ack.frame[9] == mac_addr[0] && packet_ack.frame[10] == mac_addr[1] && packet_ack.frame[11] == mac_addr[2] && packet_ack.frame[12] == mac_addr[3]) {
     ack_flag = 1;
   }
@@ -636,19 +671,15 @@ int PaPIR_Isr()
 #pragma vector=TIMERA0_VECTOR
 __interrupt void interrupt_slow_timeout (void)
 {
-#ifdef LED_INDICATOR
-  P1OUT |= BIT0;
-#endif
-  
-  // get_rt_voltage();
-  // get_lux_reading();
- // get_lux_reading_repeat();
-  //P1OUT |= BIT0;
-  tx_to_ap();
- // P1OUT |= BIT0;
-  
-  // enter LPM0 on ISR exit
-  // __bis_SR_register_on_exit(LPM3_bits);
+  if(timer%2){
+  P1OUT &= ~0x02;
+  }
+  else{
+  P1OUT |= 0x02;
+ 
+  }
+timer++;
+
 }
 
 
@@ -680,6 +711,8 @@ __interrupt void ADC10_ISR(void)
 {
   __bic_SR_register_on_exit(LPM0_bits);     // Clear CPUOFF bit from 0(SR)
 }
+
+
 
 
 #pragma vector=PORT1_VECTOR

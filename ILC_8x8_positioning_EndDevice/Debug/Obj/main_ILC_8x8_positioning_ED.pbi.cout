@@ -1,14 +1,14 @@
-"C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\ILC_8x8_positioning_EndDevice\main_ILC_8x8_positioning_ED.c"
+"C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\main_ILC_8x8_positioning_ED.c"
 -std=c++98
 -ferror-limit=100
 -I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\ILC_8x8_positioning_EndDevice\..\drivers\bsp
+C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\..\drivers\bsp
 -I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\ILC_8x8_positioning_EndDevice\..\drivers\bsp\drivers
+C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\..\drivers\bsp\drivers
 -I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\ILC_8x8_positioning_EndDevice\..\drivers\bsp\boards\EZ430RF
+C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\..\drivers\bsp\boards\EZ430RF
 -I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\ILC_8x8_positioning_EndDevice\..\drivers\mrfi
+C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\..\drivers\mrfi
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\inc\dlib
 -I
@@ -18,13 +18,13 @@ C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\inc\dlib\c
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\inc\dlib\ecpp
 -I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\drivers\bsp
+C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\bsp
 -I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\drivers\bsp\drivers
+C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\bsp\drivers
 -I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\drivers\bsp\boards\EZ430RF
+C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\bsp\boards\EZ430RF
 -I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\drivers\mrfi
+C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\mrfi
 -DMRFI_CC2500=1
 -D__MSP430F2274__=1
 -D__CHAR_BITS__=8
@@ -222,8 +222,8 @@ C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\dr
 -D__PLAIN_INT_BITFIELD_IS_SIGNED__=1
 -D__HAS_LOCATED_DECLARATION__=1
 -D__IAR_COMPILERBASE__=593669
--D__DATE__="Jan  5 2016"
--D__TIME__="09:53:33"
+-D__DATE__="Jan 12 2016"
+-D__TIME__="15:28:50"
 -D__STDC__=1
 -D__cplusplus=199711L
 -D__iar_extended_embedded_cplusplus=1
