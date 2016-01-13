@@ -28,6 +28,7 @@ int16_t xn = 0;
 int16_t en = 0;
 uint32_t timer=0;
 volatile uint8_t timer_ack = 0;
+uint8_t packet_no = 0;
 // int16_t dn = 0;
 uint8_t pid_iter = 0;
 uint8_t counter = MAX_TRY;
@@ -53,7 +54,8 @@ uint8_t fast_decrease_cnt = 0;
 volatile uint8_t batt_below_3V = 0;
 static unsigned int my_data[SAMPLE_NUM];
 volatile uint8_t currentTs = TS1SEC;
-uint8_t mac_addr[4] = {0,1,7,5};
+uint8_t mac_addr[4] = {169,175,1,43};
+
 uint16_t tic_sec = 0;
 
 
@@ -238,29 +240,27 @@ int main(void)
 #ifdef LED_INDICATOR
   P1OUT |= 0x01;
 #endif
-
+  P1OUT |= 0x01;
   // Enter low-power listen
   // start_slow_timeout();
   while (1) {
     //get_lux_reading_repeat();
-    if(bit_count > 32){
+    if(bit_count > 31){
       bit_count = 0;
       packet_data = 0;
-         
+      
     }
     read_pir();
     
-    
-    create_packet(bit_count);
-   
-    bit_count++;
-    
-    if(bit_count > 32 && timer_ack == 1 ){
-      tx_to_ap();
-    }
+    if( timer_ack == 1){
       
-    
-    low_power_delay(LPD_100MSEC);
+      create_packet(bit_count); 
+      bit_count++;
+      if(bit_count > 31 ){
+        tx_to_ap();
+      }
+      low_power_delay(LPD_100MSEC);
+    }
   }
 }
 
@@ -305,32 +305,32 @@ uint8_t tx_to_ap()
 {
   // TODO: insert PIR sensor output (motion_detected) into packet
   
-     P1OUT &= ~0x02; 
-       packet_uframe.frame[13] = 169;
-       packet_uframe.frame[14] =  packet_data & 0xff;  
-       packet_uframe.frame[15] = packet_data>>8 & 0xff ;  
-       packet_uframe.frame[16] = packet_data>>16 & 0xff;
-       packet_uframe.frame[17] = packet_data>>24 & 0xff;
-       packet_uframe.frame[18] = timer & 0xff;  
-       packet_uframe.frame[19] = timer>>8 & 0xff ;  
-       packet_uframe.frame[20] = timer>>16 & 0xff;
-       packet_uframe.frame[21] = timer>>24 & 0xff;
-      
+//  P1OUT &= ~0x02; 
+  packet_uframe.frame[13] = packet_no++;
+  packet_uframe.frame[14] =  packet_data & 0xff;  
+  packet_uframe.frame[15] = packet_data>>8 & 0xff ;  
+  packet_uframe.frame[16] = packet_data>>16 & 0xff;
+  packet_uframe.frame[17] = packet_data>>24 & 0xff;
+  packet_uframe.frame[18] = timer & 0xff;  
+  packet_uframe.frame[19] = timer>>8 & 0xff ;  
+  packet_uframe.frame[20] = timer>>16 & 0xff;
+  packet_uframe.frame[21] = timer>>24 & 0xff;
   
-
+  
+  
   
   // hop to public channel and send dn to AP (pseudo distributed protocol)
- do {
-   P1OUT |=0x02;
+//  do {
+    P1OUT ^=0x02;
     
-   cca_tx_success = nac_mrfi_tx_cca(&packet_uframe, PCH/*GCH*/);
+    cca_tx_success = nac_mrfi_tx_cca(&packet_uframe, PCH/*GCH*/);
     // keep RxOn and wait for ack
-  __delay_cycles(1e6);
-  
+    __delay_cycles(1e6);
     
-  } while (cca_tx_success != 1 || ack_flag != 1);
+    
+//  } while (cca_tx_success != 1 || ack_flag != 1);
   
- P1OUT &= ~0x02; 
+  
   cca_tx_success = 0;
   ack_flag = 0;
   

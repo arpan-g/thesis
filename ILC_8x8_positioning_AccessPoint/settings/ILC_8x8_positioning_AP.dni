@@ -33,7 +33,7 @@ TypeViolation=1
 UnspecRange=1
 ActionState=1
 [DebugChecksum]
-Checksum=1698048981
+Checksum=-23666419
 [State Storage]
 Control Register=-1
 [Sequencer]
@@ -69,9 +69,8 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\main_ILC_8x8_positioning_AP.c}.246.5" 1 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\main_ILC_8x8_positioning_AP.c}.137.3" 0 0 0 0 "" 0 ""
-Count=2
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\main_ILC_8x8_positioning_AP.c}.137.3" 0 0 0 0 "" 0 ""
+Count=1
 [FET]
 Clock mode=38
 Extended Clock mode=1

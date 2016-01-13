@@ -6,82 +6,95 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
-      <file>$TOOLKIT_DIR$\inc\msp430.h</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_spi.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\mrfi.pbi</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_config.h</file>
-      <file>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.ulp</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.d43</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_generic_leds.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\mrfi.r43</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_board_defs.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_buttons.c</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_spi.c</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\bsp_buttons.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\ysizet.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_generic_buttons.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_external\mrfi_board_defs.h</file>
-      <file>$TOOLKIT_DIR$\lib\dlib\dl430fn.r43</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_board.c</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_leds.c</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\common\mrfi_f1f2.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_button_defs.h</file>
-      <file>$TOOLKIT_DIR$\inc\in430.h</file>
-      <file>$PROJ_DIR$\conf_env_ILC_8x8_positioning_ED.h</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\smartrf\CC2500\smartrf_CC2500.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\main_ILC_8x8_positioning_ED.pbi</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_drivers.c</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_radio.c</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_external\mrfi_board.c</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
-      <file>$PROJ_DIR$\calibration_function_ILC_8x8_positioning_ED.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\mcus\bsp_msp430_defs.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\bsp_leds.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\bsp.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\string.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\bsp.r43</file>
-      <file>$PROJ_DIR$\Debug\Obj\ILC_8x8_positioning_ED.pbd</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\common\mrfi_f1f2.c</file>
-      <file>$PROJ_DIR$\..\..\ILC_8x8_positioning_EndDevice\main_ILC_8x8_positioning_ED.c</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_led_defs.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\main_ILC_8x8_positioning_ED.r43</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_driver_defs.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\bsp.c</file>
       <file>$PROJ_DIR$\main_ILC_8x8_positioning_ED.c</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\bsp.c</file>
       <file>$PROJ_DIR$\..\drivers\bsp\bsp.h</file>
       <file>$PROJ_DIR$\..\drivers\bsp\bsp_macros.h</file>
       <file>$PROJ_DIR$\..\drivers\mrfi\mrfi.c</file>
       <file>$PROJ_DIR$\..\drivers\mrfi\mrfi.h</file>
       <file>$PROJ_DIR$\..\drivers\mrfi\mrfi_defs.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\string.h</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\common\mrfi_f1f2.c</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\mcus\bsp_msp430_defs.h</file>
+      <file>$TOOLKIT_DIR$\config\linker\lnk430f2274.xcl</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\bsp_leds.h</file>
+      <file>$TOOLKIT_DIR$\inc\msp430f2274.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_led_defs.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.r43</file>
       <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
       <file>$TOOLKIT_DIR$\lib\dlib\dl430fn.h</file>
-      <file>$TOOLKIT_DIR$\inc\msp430f2274.h</file>
-      <file>$TOOLKIT_DIR$\config\linker\lnk430f2274.xcl</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_spi.h</file>
+      <file>$TOOLKIT_DIR$\inc\msp430.h</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\common\mrfi_f1f2.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_board.c</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_driver_defs.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main_ILC_8x8_positioning_ED.r43</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_button_defs.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\mrfi.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\ILC_8x8_positioning_ED.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.pbi</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_generic_leds.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\in430.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_drivers.c</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_radio.c</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
+      <file>$PROJ_DIR$\calibration_function_ILC_8x8_positioning_ED.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_buttons.c</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_spi.c</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\bsp_buttons.h</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dl430fn.r43</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_config.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ysizet.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_leds.c</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_external\mrfi_board_defs.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main_ILC_8x8_positioning_ED.pbi</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\smartrf\CC2500\smartrf_CC2500.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_external\mrfi_board.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\mrfi.r43</file>
+      <file>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.d43</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_generic_buttons.h</file>
+      <file>$PROJ_DIR$\conf_env_ILC_8x8_positioning_ED.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_board_defs.h</file>
+      <file>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.ulp</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 7</file>
+          <file> 50</file>
         </tool>
         <tool>
           <name>ULP430</name>
-          <file> 5</file>
+          <file> 54</file>
         </tool>
       </outputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.d43</name>
+      <name>$PROJ_DIR$\main_ILC_8x8_positioning_ED.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 24</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 46</file>
+        </tool>
+      </outputs>
       <inputs>
         <tool>
-          <name>XLINK</name>
-          <file> 55 37 43 9 17</file>
+          <name>ICC430</name>
+          <file> 5 2 53 9 20 12 31 37 42 3 6 11 13 29 19 52 35</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5 2 53 9 20 12 31 37 42 3 6 11 13 29 19 52 35</file>
         </tool>
       </inputs>
     </file>
@@ -90,30 +103,30 @@
       <outputs>
         <tool>
           <name>ICC430</name>
-          <file> 37</file>
+          <file> 14</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 35</file>
+          <file> 28</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICC430</name>
-          <file> 47 10 33 1 54 23 6 4 48 44 18 27 34 42 8 13 22 15 19 11</file>
+          <file> 2 53 9 20 12 31 37 42 3 23 22 32 11 13 29 40 25 51 44 38</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 47 10 33 1 54 23 6 4 48 44 18 27 34 42 8 13 22 15 19 11</file>
+          <file> 2 53 9 20 12 31 37 42 3 23 22 32 11 13 29 40 25 51 44 38</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\main_ILC_8x8_positioning_ED.c</name>
+      <name>$PROJ_DIR$\..\drivers\mrfi\mrfi.c</name>
       <outputs>
         <tool>
           <name>ICC430</name>
-          <file> 43</file>
+          <file> 49</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -123,34 +136,20 @@
       <inputs>
         <tool>
           <name>ICC430</name>
-          <file> 50 47 10 33 1 54 23 6 4 48 51 34 42 8 2 24 31</file>
+          <file> 6 2 53 9 20 12 31 37 42 3 11 13 29 33 7 36 34 17 16 18 30 15 43 5 45 19 21 47 39 8 48</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 50 47 10 33 1 54 23 6 4 48 51 34 42 8 2 24 31</file>
+          <file> 6 2 53 9 20 12 31 37 42 3 11 13 29 33 7 36 34 17 16 18 30 15 43 5 45 19 21 47 39 8 48</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\drivers\mrfi\mrfi.c</name>
-      <outputs>
-        <tool>
-          <name>ICC430</name>
-          <file> 9</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 3</file>
-        </tool>
-      </outputs>
+      <name>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.d43</name>
       <inputs>
         <tool>
-          <name>ICC430</name>
-          <file> 51 47 10 33 1 54 23 6 4 48 34 42 8 28 36 32 30 41 53 0 20 52 14 50 16 2 21 25 12 39 29</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 51 47 10 33 1 54 23 6 4 48 34 42 8 28 36 32 30 41 53 0 20 52 14 50 16 2 21 25 12 39 29</file>
+          <name>XLINK</name>
+          <file> 10 14 24 49 41</file>
         </tool>
       </inputs>
     </file>

@@ -143,7 +143,7 @@ int main(void)
   //matlab_connected = 1;
   uint8_t count =0;
   while (1) {
-    if(count <1)
+    if(count < 2)
     {
       transmit_start();
        delay_msec(19);
