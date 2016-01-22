@@ -56,7 +56,7 @@ uint8_t fast_decrease_cnt = 0;
 volatile uint8_t batt_below_3V = 0;
 uint16_t count = 0;
 volatile uint8_t currentTs = TS1SEC;
-uint8_t mac_addr[4] = {169,175,6,43};
+uint8_t mac_addr[4] = {169,175,5,43};
 uint8_t bit_count = 0;
 uint16_t tic_sec = 0;
 uint8_t isSynced = 0;
@@ -87,7 +87,8 @@ void read_pir();
 void start_timer();
 void delay_msec(uint8_t miliseconds);
 void stop_timer();
-void time_sync_packet();
+
+void transmit_sync_packet();
 
 void low_power_delay(uint16_t tic)
 {
@@ -215,7 +216,7 @@ int main(void)
   P1OUT |= 0x01;
   // Enter low-power listen
   // start_slow_timeout();
- 
+  
   while (1) {
     //get_lux_reading_repeat();
     if(bit_count > 31){
@@ -230,11 +231,18 @@ int main(void)
       bit_count++;
       
       if(bit_count > 31 ){
-        
-        tx_to_ap();
+        count++;
+        if(count % 15 == 0){
+          P1OUT ^= 0x02;
+          transmit_sync_packet();
+        }else{
+          
+          tx_to_ap();
+          //low_power_delay(LPD_100MSEC);
+        }
         
       }
-       
+      
       low_power_delay(LPD_100MSEC);
     }
   }
@@ -275,19 +283,21 @@ void start_timer()
 
 
 void sync_clock(mrfiPacket_t packet_ack){
-
-//  uint16_t t1,t2,t3,t4,delta;
-  uint16_t t3;
- // t1 =  (packet_ack.frame[14] |  packet_ack.frame[15]<<8);
- // t2 =  (packet_ack.frame[18] |  packet_ack.frame[19]<<8);
-  t3 = (packet_ack.frame[20] |  packet_ack.frame[21]<<8);
+  
+  //  uint16_t t1,t2,t3,t4,delta;
+  uint32_t t3;
+  // t1 =  (packet_ack.frame[14] |  packet_ack.frame[15]<<8);
+  // t2 =  (packet_ack.frame[18] |  packet_ack.frame[19]<<8);
+  t3 = (packet_ack.frame[15] |  packet_ack.frame[16]<< 8    | 
+        packet_ack.frame[17]<< 16 | packet_ack.frame[18]<< 24);
+  
   //t4 = timer;
   //delta = (uint16_t)0.5*((t2-t1)-(t4-t3));
+  TACTL = MC_0;
   timer = t3 ;
-  isSynced = 1;
+  TACTL = TASSEL_1 + MC_1;
   
   
-
 }
 
 
@@ -299,14 +309,14 @@ uint8_t tx_to_ap()
   //  P1OUT &= ~0x02; 
   packet_uframe.frame[9] = 169;
   packet_uframe.frame[13] = packet_no++;
-  packet_uframe.frame[14] =  packet_data & 0xff;  
-  packet_uframe.frame[15] = packet_data>>8 & 0xff ;  
-  packet_uframe.frame[16] = packet_data>>16 & 0xff;
-  packet_uframe.frame[17] = packet_data>>24 & 0xff;
+  packet_uframe.frame[14] = packet_data & 0xff;  
+  packet_uframe.frame[15] = (packet_data>>8) & 0xff ;  
+  packet_uframe.frame[16] = (packet_data>>16) & 0xff;
+  packet_uframe.frame[17] = (packet_data>>24) & 0xff;
   packet_uframe.frame[18] = timer & 0xff;  
-  packet_uframe.frame[19] = timer>>8 & 0xff ;  
-  packet_uframe.frame[20] = timer>>16 & 0xff;
-  packet_uframe.frame[21] = timer>>24 & 0xff;
+  packet_uframe.frame[19] = (timer>>8) & 0xff ;  
+  packet_uframe.frame[20] = (timer>>16) & 0xff;
+  packet_uframe.frame[21] = (timer>>24) & 0xff;
   
   
   
@@ -327,6 +337,22 @@ uint8_t tx_to_ap()
   ack_flag = 0;
   
   return 1;
+}
+
+void transmit_sync_packet(){
+  mrfiPacket_t sync_packet;
+  //  P1OUT &= ~0x02; 
+  sync_packet.frame[0] = 8+8;
+  sync_packet.frame[9] = SYNC_PACKET;
+  sync_packet.frame[14] = mac_addr[2];
+  sync_packet.frame[15] = 0;
+  sync_packet.frame[10] = timer & 0xff;  
+  sync_packet.frame[11] = (timer>>8) & 0xff ;  
+  sync_packet.frame[12] = (timer>>16) & 0xff;
+  sync_packet.frame[13] = (timer>>24) & 0xff;
+  //MRFI_Transmit(&sync_packet, MRFI_TX_TYPE_FORCED);
+  cca_tx_success = nac_mrfi_tx_cca(&sync_packet, PCH/*GCH*/);
+  
 }
 
 
@@ -381,8 +407,8 @@ void MRFI_RxCompleteISR()
     timer_ack = 1;
     
   }
-  if(packet_ack.frame[9] == SYNC_PACKET & packet_ack.frame[11] == mac_addr[2] ){
-  sync_clock(packet_ack);
+  if(packet_ack.frame[9] == SYNC_PACKET & packet_ack.frame[14] == mac_addr[2] ){
+    sync_clock(packet_ack);
   }
   
 }
@@ -450,13 +476,13 @@ void continue_low_power_delay()
 #pragma vector=TIMERA0_VECTOR
 __interrupt void interrupt_slow_timeout (void)
 {
-//  if(timer%2){
-//    P1OUT &= ~0x02;
-//  }
-//  else{
-//    P1OUT |= 0x02;
-//    
-//  }
+  //  if(timer%2){
+  //    P1OUT &= ~0x02;
+  //  }
+  //  else{
+  //    P1OUT |= 0x02;
+  //    
+  //  }
   timer++;
   
 }
