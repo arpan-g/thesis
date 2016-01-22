@@ -9,7 +9,6 @@
 #include "mrfi.h"
 #include "radios/family1/mrfi_spi.h"
 #include "conf_env.h"
-#include "msp430f2274.h"
 // #include "calibration_function.h"
 
 
@@ -17,7 +16,6 @@
 mrfiPacket_t packet_uframe;
 mrfiPacket_t packet_ack_uframe;
 mrfiPacket_t packet_dn;
-mrfiPacket_t transmissionStartPacket;;
 // mrfiPacket_t packet_dn_buffer[32];
 uint16_t uFrame_ack = 0;
 uint16_t msg_ack = 0;
@@ -35,7 +33,7 @@ uint8_t counter = MAX_TRY;
 uint8_t enable_low_power_delay = 0;
 uint8_t matlab_connected = 0;
 uint8_t send_packet = 0;
-
+volatile uint32_t timer;
 
 int PaPIR_Isr(); /* this called from mrfi_board.c */
 void TxData();
@@ -69,6 +67,7 @@ void low_power_delay(uint16_t tic)
     TBCCR0 = TimerTemp;
 }
 */
+
 void delay_msec(uint8_t miliseconds)
 {
     for (tic_sec = 0; tic_sec < miliseconds; tic_sec++) {
@@ -84,6 +83,7 @@ void delay_sec(uint8_t seconds)
         }
     }
 }
+
 #ifdef TO_TERMINAL
 void print_counter(int8_t counter)
 {
@@ -96,83 +96,87 @@ void print_counter(int8_t counter)
 #endif
 int main(void)
 {
-  // Initialize board
-  
-  uint8_t transmit_sucess = 0;
-  BSP_Init();
-  
+    // Initialize board
+    BSP_Init();
+
 #ifdef TO_TERMINAL
-  // Initialize UART
-  P3SEL    |= 0x30;     // P3.4,5 = USCI_A0 TXD/RXD
-  UCA0CTL1  = UCSSEL_2; // SMCLK
-  UCA0BR0   = 0x41;     // 9600 from 8Mhz
-  UCA0BR1   = 0x3;
-  UCA0MCTL  = UCBRS_2;                     
-  UCA0CTL1 &= ~UCSWRST; // Initialize USCI state machine
-  IE2      |= UCA0RXIE; // Enable USCI_A0 RX interrupt
+    // Initialize UART
+    P3SEL    |= 0x30;     // P3.4,5 = USCI_A0 TXD/RXD
+    UCA0CTL1  = UCSSEL_2; // SMCLK
+    UCA0BR0   = 0x41;     // 9600 from 8Mhz
+    UCA0BR1   = 0x3;
+    UCA0MCTL  = UCBRS_2;                     
+    UCA0CTL1 &= ~UCSWRST; // Initialize USCI state machine
+    IE2      |= UCA0RXIE; // Enable USCI_A0 RX interrupt
 #endif
-  // Initialize radio interface
-  MRFI_Init();
+    // Initialize radio interface
+    MRFI_Init();
 #ifdef FDMA
-  // Frequency agility
-  mrfiSpiWriteReg(PATABLE,TPL);// Tx power
-  mrfiSpiWriteReg(MDMCFG1,0x23);
-  mrfiSpiWriteReg(MDMCFG0,0xF8);// 400kHz channel spacing
-  mrfiSpiWriteReg(FREQ2,0x5C);
-  mrfiSpiWriteReg(FREQ1,0x80);
-  mrfiSpiWriteReg(FREQ0,0x00);  // 2.405GHz base frequency
-  mrfiSpiWriteReg(CHANNR,MCH);  // stay at master channel
+    // Frequency agility
+    mrfiSpiWriteReg(PATABLE,TPL);// Tx power
+    mrfiSpiWriteReg(MDMCFG1,0x23);
+    mrfiSpiWriteReg(MDMCFG0,0xF8);// 400kHz channel spacing
+    mrfiSpiWriteReg(FREQ2,0x5C);
+    mrfiSpiWriteReg(FREQ1,0x80);
+    mrfiSpiWriteReg(FREQ0,0x00);  // 2.405GHz base frequency
+    mrfiSpiWriteReg(CHANNR,MCH);  // stay at master channel
 #endif
+    
+    // Initialize TimerA & TimerB
+    BCSCTL3 |= LFXT1S_2;
+    // TACTL=MC_0; TACCTL0=0; TACCR0=1060;  //slow timeout, ~100msec
+    // TBCTL=MC_0; TBCCTL0=0; TBCCR0=41781; //fast timeout, ~10msec
+/*    
+    MRFI_WakeUp();
+    MRFI_RxOn();
+    mrfiSpiWriteReg(CHANNR,MCH);
+*/
+ BCSCTL3 |= LFXT1S_2;
+  TACCR0 = 106;	//Number of cycles in the timer
+  TACTL = TASSEL_1 + MC_1;
+  //delay_msec(3000);
+  CCTL0 |= CCIE; 
+  _EINT();
+ uint8_t count =0;
+    while (1) {
+ 
+		 if(count < 1)
+    {
+      transmit_start();
+      delay_msec(19);
+      count++;
+    }  
+    delay_msec(1);
+        delay_msec(1);
+    }
+}
+
+
+void transmit_start()
+{
   
-  // Initialize TimerA & TimerB
-  BCSCTL3 |= LFXT1S_2;
-  // TACTL=MC_0; TACCTL0=0; TACCR0=1060;  //slow timeout, ~100msec
-  // TBCTL=MC_0; TBCCTL0=0; TBCCR0=41781; //fast timeout, ~10msec
-      
-  MRFI_WakeUp();
-  MRFI_RxOn();
-  mrfiSpiWriteReg(CHANNR,MCH);
-  
-  
-  transmissionStartPacket.frame[0] = 8+4;
+  mrfiPacket_t transmissionStartPacket;
+    transmissionStartPacket.frame[0] = 8+4;
   transmissionStartPacket.frame[9] = 0xFA;
   transmissionStartPacket.frame[10] = 0xFA;
   transmissionStartPacket.frame[11] = 0xFA;
   transmissionStartPacket.frame[12] = 0xFA;
-  
-  //matlab_connected = 1;
-  uint8_t count =0;
-  while (1) {
-    if(count < 2)
-    {
-      transmit_start();
-       delay_msec(19);
-      count++;
-    }  
-    delay_msec(1);
-  
-}
-}
-
-int PaPIR_Isr()
-{
-    motion_detected = 1;
-    return 0;
-}
-
-void transmit_start()
-{
- 
- 
   MRFI_WakeUp();
   mrfiSpiWriteReg(CHANNR, MCH);
   MRFI_RxOn();
   
   MRFI_Transmit(&transmissionStartPacket, MRFI_TX_TYPE_FORCED);
-   
   
+  
+  
+  
+}
 
-  
+
+int PaPIR_Isr()
+{
+    motion_detected = 1;
+    return 0;
 }
 
 
@@ -183,8 +187,14 @@ void MRFI_RxCompleteISR()
     MRFI_Receive(&packet_dn);
     
     // ack uframe
-//    packet_dn.frame[9] = 0xFA;
+    if(packet_dn.frame[9]== 0xfb){
+	 packet_dn.frame[15]  = timer & 0xff;  
+	 packet_dn.frame[16] = (timer>>8) & 0xff ;
+	 packet_dn.frame[17] = (timer>>16) & 0xff;
+	 packet_dn.frame[18] = (timer>>24) & 0xff;
+		
     MRFI_Transmit(&packet_dn, MRFI_TX_TYPE_FORCED);
+    }
       
     // __delay_cycles(1000);
     // P1OUT &= ~0x02;
@@ -220,11 +230,10 @@ __interrupt void USCI0RX_ISR(void)
 #ifdef LED_INDICATOR
         P1OUT |= 0x01;
 #endif
-        P1OUT |= 0x01;
         // switch on radio
-//        MRFI_WakeUp();
-//        MRFI_RxOn();
-//        mrfiSpiWriteReg(CHANNR,MCH);
+        MRFI_WakeUp();
+        MRFI_RxOn();
+        mrfiSpiWriteReg(CHANNR,MCH);
     } else
     if (rx == '$')
     {
@@ -240,28 +249,34 @@ void TxData()
     // 'I' & packet_dn.frame[9 to 12] & 'R' & RSSI & 'L' & packet_dn.frame[13] & packet_dn.frame[12]
     // unsigned int data = 0;
     // char dataString[] = {"CxDxxXxx"};
-    char dataString[] = {"IxxxxRxLxxx\r\n"};
+      char dataString[] = {"IxxxxRxLxxxxxxx\r\n"};
     
     // parse MAC ID
-    dataString[1] = packet_dn.frame[9];
-    dataString[2] = packet_dn.frame[10];
-    dataString[3] = packet_dn.frame[11];
-    dataString[4] = packet_dn.frame[12];
+   dataString[1] = packet_dn.frame[9];
+  dataString[2] = packet_dn.frame[10];
+  dataString[3] = packet_dn.frame[11];
+  dataString[4] = packet_dn.frame[12];
+  
+  // RSSI, 1 byte
+  // dataString[6] = Mrfi_CalculateRssi(packet_dn.rxMetrics[0]);
+  // ref: http://e2e.ti.com/support/wireless_connectivity/f/156/t/74859.aspx
+  //dataString[6] = packet_dn.rxMetrics[0];
+  dataString[5] = packet_dn.frame[13]; //169
+  // xn, 2 bytes
+  dataString[6]  = packet_dn.frame[14]; // data packet
+  dataString[7]  = packet_dn.frame[15];// data packet
+  dataString[8]  = packet_dn.frame[16];// data packet
+  dataString[9]  = packet_dn.frame[17];// data packet
+  dataString[10]  = packet_dn.frame[18];
+  dataString[11]  = packet_dn.frame[19];
+  dataString[12]  = packet_dn.frame[20];
+  dataString[13]  = packet_dn.frame[21];
+  dataString[14] = timer & 0xff;  
+  dataString[15] = (timer>>8) & 0xff ;  
+  dataString[16] = (timer>>16) & 0xff;
+  dataString[17] = (timer>>24) & 0xff;
     
-    // RSSI, 1 byte
-    // dataString[6] = Mrfi_CalculateRssi(packet_dn.rxMetrics[0]);
-    // ref: http://e2e.ti.com/support/wireless_connectivity/f/156/t/74859.aspx
-    //dataString[6] = packet_dn.rxMetrics[0];
-    dataString[5] = packet_dn.frame[13]; //169
-    // xn, 2 bytes
-    dataString[6]  = packet_dn.frame[14]; // data packet
-    dataString[7]  = packet_dn.frame[15];// data packet
-    dataString[8]  = packet_dn.frame[16];// data packet
-    dataString[9]  = packet_dn.frame[17];// data packet
-    dataString[10]  = packet_dn.frame[18];
-    dataString[11]  = packet_dn.frame[19];
-    dataString[12]  = packet_dn.frame[20];
-    dataString[13]  = packet_dn.frame[21];
+    
 /*	
     data = packet_dn.frame[11];
     switch (data) {
@@ -338,6 +353,18 @@ void TxString(char* string, int length)
     UCA0TXBUF = string[pointer];
     while (!(IFG2&UCA0TXIFG));              // USCI_A0 TX buffer ready?
   }
+}
+
+#pragma vector=TIMERA0_VECTOR
+__interrupt void interrupt_slow_timeout (void)
+{
+  
+  //P1OUT ^= 0x02;
+  
+  timer++;
+  
+  
+  
 }
 
 /*
