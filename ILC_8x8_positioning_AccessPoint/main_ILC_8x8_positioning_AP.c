@@ -36,10 +36,10 @@ uint8_t send_packet = 0;
 volatile uint32_t timer;
 
 int PaPIR_Isr(); /* this called from mrfi_board.c */
-void TxData();
+void TxData(uint32_t time);
 void TxString(char* string, int length);
 void transmit_start();
-/*
+
 void pause_low_power_delay()
 {
     TBCTL |= MC_0;
@@ -66,7 +66,7 @@ void low_power_delay(uint16_t tic)
     TBCTL &= ~(MC_1);                         // Stop Timer B
     TBCCR0 = TimerTemp;
 }
-*/
+
 
 void delay_msec(uint8_t miliseconds)
 {
@@ -156,7 +156,7 @@ void transmit_start()
 {
   
   mrfiPacket_t transmissionStartPacket;
-    transmissionStartPacket.frame[0] = 8+4;
+  transmissionStartPacket.frame[0] = 8+4;
   transmissionStartPacket.frame[9] = 0xFA;
   transmissionStartPacket.frame[10] = 0xFA;
   transmissionStartPacket.frame[11] = 0xFA;
@@ -172,6 +172,22 @@ void transmit_start()
   
 }
 
+void transmit_sync_packet()
+{
+  mrfiPacket_t sync_packet;
+  sync_packet.frame[0] = 8+4;
+  sync_packet.frame[9] = 0xFB;
+  sync_packet.frame[11] =  timer      & 0xff;  
+  sync_packet.frame[12] = (timer>>8)  & 0xff;
+  sync_packet.frame[13] = (timer>>16) & 0xff;
+  sync_packet.frame[14] = (timer>>24) & 0xff;
+  MRFI_WakeUp();
+  mrfiSpiWriteReg(CHANNR, MCH);
+  MRFI_RxOn();
+  
+  MRFI_Transmit(&sync_packet, MRFI_TX_TYPE_FORCED);
+}
+
 
 int PaPIR_Isr()
 {
@@ -184,17 +200,12 @@ void MRFI_RxCompleteISR()
 {
     // notice that this is Rx ISR, no need to call MRFI_RxOn
     // P1OUT |= 0x02;
+    uint32_t time;
     MRFI_Receive(&packet_dn);
-    
-    // ack uframe
-    if(packet_dn.frame[9]== 0xfb){
-	 packet_dn.frame[15]  = timer & 0xff;  
-	 packet_dn.frame[16] = (timer>>8) & 0xff ;
-	 packet_dn.frame[17] = (timer>>16) & 0xff;
-	 packet_dn.frame[18] = (timer>>24) & 0xff;
-		
-    MRFI_Transmit(&packet_dn, MRFI_TX_TYPE_FORCED);
-    }
+    time = timer;
+
+   
+
       
     // __delay_cycles(1000);
     // P1OUT &= ~0x02;
@@ -207,12 +218,18 @@ void MRFI_RxCompleteISR()
     print_counter(packet_dn.frame[9]);  // lux reading LB
     */
     ///*
+    
+  
+
+    
     if (matlab_connected) {
         P1OUT |= 0x02;
-        TxData();
+        TxData(time);
         P1OUT &= ~0x02;
         // send_packet = 1;
     }
+    
+  
     //*/
     // TxData();
     // TxString("C1D20", 5);
@@ -243,16 +260,17 @@ __interrupt void USCI0RX_ISR(void)
 
 
 // void TxData(unsigned int data)
-void TxData()
+void TxData(uint32_t time)
 {
     // 'C' & '0'+packet_dn.frame[11] & 'D' && packet_dn.frame[10] & packet_dn.frame[9] & 'X' & packet_dn.frame[13] & packet_dn.frame[12]
     // 'I' & packet_dn.frame[9 to 12] & 'R' & RSSI & 'L' & packet_dn.frame[13] & packet_dn.frame[12]
     // unsigned int data = 0;
     // char dataString[] = {"CxDxxXxx"};
-      char dataString[] = {"IxxxxRxLxxxxxxx\r\n"};
+    
     
     // parse MAC ID
-   dataString[1] = packet_dn.frame[9];
+  char dataString[] = {"IxxxxRxLxxxxxxx\r\n"};
+  dataString[1] = packet_dn.frame[9];
   dataString[2] = packet_dn.frame[10];
   dataString[3] = packet_dn.frame[11];
   dataString[4] = packet_dn.frame[12];
@@ -261,8 +279,9 @@ void TxData()
   // dataString[6] = Mrfi_CalculateRssi(packet_dn.rxMetrics[0]);
   // ref: http://e2e.ti.com/support/wireless_connectivity/f/156/t/74859.aspx
   //dataString[6] = packet_dn.rxMetrics[0];
-  dataString[5] = packet_dn.frame[13]; //169
+ 
   // xn, 2 bytes
+  dataString[5] = packet_dn.frame[13]; //169
   dataString[6]  = packet_dn.frame[14]; // data packet
   dataString[7]  = packet_dn.frame[15];// data packet
   dataString[8]  = packet_dn.frame[16];// data packet
@@ -271,10 +290,10 @@ void TxData()
   dataString[11]  = packet_dn.frame[19];
   dataString[12]  = packet_dn.frame[20];
   dataString[13]  = packet_dn.frame[21];
-  dataString[14] = timer & 0xff;  
-  dataString[15] = (timer>>8) & 0xff ;  
-  dataString[16] = (timer>>16) & 0xff;
-  dataString[17] = (timer>>24) & 0xff;
+  dataString[14] = time & 0xff;  
+  dataString[15] = (time>>8) & 0xff ;  
+  dataString[16] = (time>>16) & 0xff;
+  dataString[17] = (time>>24) & 0xff;
     
     
 /*	
@@ -360,8 +379,12 @@ __interrupt void interrupt_slow_timeout (void)
 {
   
   //P1OUT ^= 0x02;
-  
   timer++;
+  
+  if(timer % 200 == 0 ){
+    transmit_sync_packet();
+	  
+  }
   
   
   

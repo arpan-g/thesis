@@ -223,27 +223,27 @@ int main(void)
       bit_count = 0;
       packet_data = 0;
     }
-    
+    read_pir();
+    create_packet(bit_count);
+    bit_count++;
     
     if( timer_ack == 1){
-      read_pir();
-      create_packet(bit_count);
-      bit_count++;
+      
       
       if(bit_count > 31 ){
-        count++;
-        if(count % 15 == 0){
-          P1OUT ^= 0x02;
-          transmit_sync_packet();
-        }else{
+       
+//        if(count % 60 == 0){
+//          P1OUT ^= 0x02;
+//          transmit_sync_packet();
+//        }else{
           
           tx_to_ap();
           //low_power_delay(LPD_100MSEC);
-        }
-        
+//        }
+//         count++;
       }
       
-      low_power_delay(LPD_100MSEC);
+      low_power_delay(LPD_50MSEC);
     }
   }
 }
@@ -288,8 +288,8 @@ void sync_clock(mrfiPacket_t packet_ack){
   uint32_t t3;
   // t1 =  (packet_ack.frame[14] |  packet_ack.frame[15]<<8);
   // t2 =  (packet_ack.frame[18] |  packet_ack.frame[19]<<8);
-  t3 = (packet_ack.frame[15] |  packet_ack.frame[16]<< 8    | 
-        packet_ack.frame[17]<< 16 | packet_ack.frame[18]<< 24);
+  t3 = ((packet_ack.frame[11] )|  (packet_ack.frame[12]<< 8)    |
+       (((uint32_t) packet_ack.frame[13])<< 16) | (((uint32_t) packet_ack.frame[14])<< 24));
   
   //t4 = timer;
   //delta = (uint16_t)0.5*((t2-t1)-(t4-t3));
@@ -407,7 +407,7 @@ void MRFI_RxCompleteISR()
     timer_ack = 1;
     
   }
-  if(packet_ack.frame[9] == SYNC_PACKET & packet_ack.frame[14] == mac_addr[2] ){
+  if(packet_ack.frame[9] == SYNC_PACKET){
     sync_clock(packet_ack);
   }
   
@@ -476,13 +476,7 @@ void continue_low_power_delay()
 #pragma vector=TIMERA0_VECTOR
 __interrupt void interrupt_slow_timeout (void)
 {
-  //  if(timer%2){
-  //    P1OUT &= ~0x02;
-  //  }
-  //  else{
-  //    P1OUT |= 0x02;
-  //    
-  //  }
+  
   timer++;
   
 }
