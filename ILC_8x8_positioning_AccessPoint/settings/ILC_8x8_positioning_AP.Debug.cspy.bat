@@ -19,6 +19,22 @@
 @REM 
 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\common\bin\cspybat" "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\bin\430proc.dll" "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\bin\430fet.dll"  %1 --plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\bin\430bat.dll" --backend -B "-p" "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\config\debugger\MSP430F2274.ddf" "--iv_base" "0xFFE0" "-d" "fet" "--erase_main" "--derivative" "MSP430F2274" "--protocol" "automatic" "--eem" "EMEX_LOW" "--port" "Automatic" "--connection" "ti_usb" "--settlingtime=0" "--msp430_dll" "msp430.dll" "--vccDefault" "3.3" "--jtag_speed" "medium" "--memtype" "F" 
+@echo off 
 
+if not "%~1" == "" goto debugFile 
 
+@echo on 
+
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "Z:\01_TUD\00_Thesis\thesis\thesis\thesis\ILC_8x8_positioning_AccessPoint\settings\ILC_8x8_positioning_AP.Debug.general.xcl" --backend -f "Z:\01_TUD\00_Thesis\thesis\thesis\thesis\ILC_8x8_positioning_AccessPoint\settings\ILC_8x8_positioning_AP.Debug.driver.xcl" 
+
+@echo off 
+goto end 
+
+:debugFile 
+
+@echo on 
+
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "Z:\01_TUD\00_Thesis\thesis\thesis\thesis\ILC_8x8_positioning_AccessPoint\settings\ILC_8x8_positioning_AP.Debug.general.xcl" "--debug_file=%~1" --backend -f "Z:\01_TUD\00_Thesis\thesis\thesis\thesis\ILC_8x8_positioning_AccessPoint\settings\ILC_8x8_positioning_AP.Debug.driver.xcl" 
+
+@echo off 
+:end

@@ -132,7 +132,7 @@ int main(void)
     mrfiSpiWriteReg(CHANNR,MCH);
 */
  BCSCTL3 |= LFXT1S_2;
-  TACCR0 = 106;	//Number of cycles in the timer
+  TACCR0 = 11;	//Number of cycles in the timer
   TACTL = TASSEL_1 + MC_1;
   //delay_msec(3000);
   CCTL0 |= CCIE; 
@@ -175,12 +175,12 @@ void transmit_start()
 void transmit_sync_packet()
 {
   mrfiPacket_t sync_packet;
-  sync_packet.frame[0] = 8+4;
+  sync_packet.frame[0] = 8+5;
   sync_packet.frame[9] = 0xFB;
-  sync_packet.frame[11] =  timer      & 0xff;  
-  sync_packet.frame[12] = (timer>>8)  & 0xff;
-  sync_packet.frame[13] = (timer>>16) & 0xff;
-  sync_packet.frame[14] = (timer>>24) & 0xff;
+  sync_packet.frame[10] =  timer      & 0xff;  
+  sync_packet.frame[11] = (timer>>8)  & 0xff;
+  sync_packet.frame[12] = (timer>>16) & 0xff;
+  sync_packet.frame[13] = (timer>>24) & 0xff;
   MRFI_WakeUp();
   mrfiSpiWriteReg(CHANNR, MCH);
   MRFI_RxOn();
@@ -381,7 +381,7 @@ __interrupt void interrupt_slow_timeout (void)
   //P1OUT ^= 0x02;
   timer++;
   
-  if(timer % 200 == 0 ){
+  if(timer % 150 == 0 ){
     transmit_sync_packet();
 	  
   }
