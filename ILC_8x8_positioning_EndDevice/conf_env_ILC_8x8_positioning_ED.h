@@ -64,6 +64,7 @@
 #define n6dBm   0x7F    // 15.1 mA
 #define n4dBm   0xA9
 #define n2dBm   0xBB    // 21.2 mA
+#define p1dBm   0xFF
 
 // define a set of sensor nodes
 // TODO: auto select sensor nodes based on RF address

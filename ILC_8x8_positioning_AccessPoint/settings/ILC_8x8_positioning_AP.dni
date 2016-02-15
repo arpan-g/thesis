@@ -33,7 +33,7 @@ TypeViolation=1
 UnspecRange=1
 ActionState=1
 [DebugChecksum]
-Checksum=-193072590
+Checksum=456439730
 [State Storage]
 Control Register=-1
 [Sequencer]
@@ -61,6 +61,13 @@ Buffer=BAAAAAAADAAAAAAAAAAAAAAA
 Number=4
 [EEM Sequencer]
 Buffer=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Breakpoints]
 Count=0
 [FET]
@@ -83,13 +90,6 @@ SP=0
 SR=0
 all registers=0
 File name=
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Aliases]
 A0=_ "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\ILC_8x8_positioning_AccessPoint\main_ILC_8x8_positioning_AP.c" "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_AccessPoint\main_ILC_8x8_positioning_AP.c"
 A1=_ "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\drivers\mrfi\radios\family1\mrfi_radio.c" "C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\mrfi\radios\family4\mrfi_radio.c"

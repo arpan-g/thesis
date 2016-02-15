@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>578279061</fileChecksum>
+  <fileChecksum>973479606</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
@@ -13,88 +13,75 @@
       <file>$PROJ_DIR$\..\drivers\mrfi\mrfi.c</file>
       <file>$PROJ_DIR$\..\drivers\mrfi\mrfi.h</file>
       <file>$PROJ_DIR$\..\drivers\mrfi\mrfi_defs.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_button_defs.h</file>
-      <file>$PROJ_DIR$\calibration_function_ILC_8x8_positioning_ED.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_buttons.c</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\smartrf\CC2500\smartrf_CC2500.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\bsp.r43</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_driver_defs.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_generic_leds.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\mrfi.pbi</file>
-      <file>$TOOLKIT_DIR$\lib\dlib\dl430fn.r43</file>
-      <file>$PROJ_DIR$\Debug\Obj\ILC_8x8_positioning_ED.pbd</file>
-      <file>$PROJ_DIR$\Debug\Obj\main_ILC_8x8_positioning_ED.pbi</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_board_defs.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\string.h</file>
-      <file>$TOOLKIT_DIR$\inc\in430.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\mrfi.r43</file>
-      <file>$TOOLKIT_DIR$\inc\msp430.h</file>
-      <file>$PROJ_DIR$\conf_env_ILC_8x8_positioning_ED.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_drivers.c</file>
       <file>$PROJ_DIR$\..\drivers\bsp\drivers\bsp_leds.h</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_radio.c</file>
-      <file>$TOOLKIT_DIR$\config\linker\lnk430f2274.xcl</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_leds.c</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_spi.h</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\common\mrfi_f1f2.c</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\common\mrfi_f1f2.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\drivers\bsp_buttons.h</file>
-      <file>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.d43</file>
-      <file>$TOOLKIT_DIR$\inc\msp430f2274.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.ulp</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_config.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\mcus\bsp_msp430_defs.h</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_led_defs.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_board.c</file>
       <file>$TOOLKIT_DIR$\lib\dlib\dl430fn.h</file>
-      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_external\mrfi_board.c</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\bsp.pbi</file>
-      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_spi.c</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\ysizet.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\main_ILC_8x8_positioning_ED.r43</file>
       <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_generic_buttons.h</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\common\mrfi_f1f2.h</file>
+      <file>$TOOLKIT_DIR$\config\linker\lnk430f2274.xcl</file>
+      <file>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.d43</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_config.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\ILC_8x8_positioning_ED.pbd</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dl430fn.r43</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_spi.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main_ILC_8x8_positioning_ED.r43</file>
+      <file>$TOOLKIT_DIR$\inc\in430.h</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_spi.c</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\family1\mrfi_radio.c</file>
+      <file>$TOOLKIT_DIR$\inc\msp430f2274.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\bsp_buttons.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_button_defs.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_driver_defs.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_board_defs.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main_ILC_8x8_positioning_ED.pbi</file>
+      <file>$PROJ_DIR$\calibration_function_ILC_8x8_positioning_ED.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\radios\common\mrfi_f1f2.c</file>
+      <file>$TOOLKIT_DIR$\inc\msp430.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.r43</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_buttons.c</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_leds.c</file>
+      <file>$PROJ_DIR$\Debug\Exe\ILC_8x8_positioning_ED.ulp</file>
+      <file>$PROJ_DIR$\Debug\Obj\mrfi.r43</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_drivers.c</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_board.c</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_led_defs.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_external\mrfi_board.c</file>
+      <file>$PROJ_DIR$\conf_env_ILC_8x8_positioning_ED.h</file>
       <file>$PROJ_DIR$\..\drivers\bsp\boards\EZ430RF\bsp_external\mrfi_board_defs.h</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$PROJ_DIR$\..\drivers\mrfi\smartrf\CC2500\smartrf_CC2500.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\mrfi.pbi</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\drivers\code\bsp_generic_leds.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ysizet.h</file>
+      <file>$PROJ_DIR$\..\drivers\bsp\mcus\bsp_msp430_defs.h</file>
     </outputs>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 35</file>
-        </tool>
-        <tool>
-          <name>ULP430</name>
-          <file> 40</file>
-        </tool>
-      </outputs>
-    </file>
     <file>
       <name>$PROJ_DIR$\main_ILC_8x8_positioning_ED.c</name>
       <outputs>
         <tool>
-          <name>ICC430</name>
-          <file> 52</file>
+          <name>BICOMP</name>
+          <file> 28</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 18</file>
+          <name>ICC430</name>
+          <file> 17</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
-          <name>ICC430</name>
-          <file> 5 2 19 42 23 36 21 43 41 3 6 26 44 14 30 24 8</file>
+          <name>BICOMP</name>
+          <file> 5 2 27 54 35 23 18 49 13 3 6 7 44 52 16 47 29</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 5 2 19 42 23 36 21 43 41 3 6 26 44 14 30 24 8</file>
+          <name>ICC430</name>
+          <file> 5 2 27 54 35 23 18 49 13 3 6 7 44 52 16 47 29</file>
         </tool>
       </inputs>
     </file>
@@ -102,45 +89,58 @@
       <name>$PROJ_DIR$\..\drivers\bsp\bsp.c</name>
       <outputs>
         <tool>
-          <name>ICC430</name>
-          <file> 12</file>
+          <name>BICOMP</name>
+          <file> 31</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 49</file>
+          <name>ICC430</name>
+          <file> 36</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
-          <name>ICC430</name>
-          <file> 2 19 42 23 36 21 43 41 3 13 45 25 26 44 14 34 7 53 29 10</file>
+          <name>BICOMP</name>
+          <file> 2 27 54 35 23 18 49 13 3 26 42 41 7 44 52 24 25 9 38 37</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 2 19 42 23 36 21 43 41 3 13 45 25 26 44 14 34 7 53 29 10</file>
+          <name>ICC430</name>
+          <file> 2 27 54 35 23 18 49 13 3 26 42 41 7 44 52 24 25 9 38 37</file>
         </tool>
       </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 12</file>
+        </tool>
+        <tool>
+          <name>ULP430</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
     </file>
     <file>
       <name>$PROJ_DIR$\..\drivers\mrfi\mrfi.c</name>
       <outputs>
         <tool>
-          <name>ICC430</name>
-          <file> 22</file>
+          <name>BICOMP</name>
+          <file> 51</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 15</file>
+          <name>ICC430</name>
+          <file> 40</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
-          <name>ICC430</name>
-          <file> 6 2 19 42 23 36 21 43 41 3 26 44 14 27 20 33 9 38 46 37 39 48 51 5 54 30 32 11 50 31 47</file>
+          <name>BICOMP</name>
+          <file> 6 2 27 54 35 23 18 49 13 3 7 44 52 22 32 30 20 43 8 21 45 33 53 5 48 16 10 50 19 34 46</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 6 2 19 42 23 36 21 43 41 3 26 44 14 27 20 33 9 38 46 37 39 48 51 5 54 30 32 11 50 31 47</file>
+          <name>ICC430</name>
+          <file> 6 2 27 54 35 23 18 49 13 3 7 44 52 22 32 30 20 43 8 21 45 33 53 5 48 16 10 50 19 34 46</file>
         </tool>
       </inputs>
     </file>
@@ -149,7 +149,7 @@
       <inputs>
         <tool>
           <name>XLINK</name>
-          <file> 28 12 52 22 16</file>
+          <file> 11 36 17 40 15</file>
         </tool>
       </inputs>
     </file>
@@ -160,6 +160,9 @@
     <forcedrebuild>
       <name>[MULTI_TOOL]</name>
       <tool>XLINK</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
     </forcedrebuild>
   </configuration>
 </project>

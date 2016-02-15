@@ -56,10 +56,11 @@ uint8_t fast_decrease_cnt = 0;
 volatile uint8_t batt_below_3V = 0;
 uint16_t count = 0;
 volatile uint8_t currentTs = TS1SEC;
-uint8_t mac_addr[4] = {169,175,5,43};
+uint8_t mac_addr[4] = {169,175,4,43};
 uint8_t bit_count = 0;
 uint16_t tic_sec = 0;
 uint8_t isSynced = 0;
+
 
 // functions declared
 
@@ -74,7 +75,7 @@ void start_fast_timeout();
 void stop_fast_timeout();
 void pause_low_power_delay();
 void continue_low_power_delay();
-uint8_t tx_to_ap();
+uint8_t tx_to_ap(uint32_t start_time,uint32_t end_time);
 void create_packet(uint8_t bit_count);
 void increase_preamble_duty_cycle();
 void decrease_preamble_duty_cycle();
@@ -127,9 +128,11 @@ void Button_Init()
 
 int main(void)
 {
+  uint32_t time;
+  uint32_t start_time;
   // Initialize board
   BSP_Init();
-  
+   
 #ifdef TO_TERMINAL
   // Initialize UART
   P3SEL    |= 0x30;     // P3.4,5 = USCI_A0 TXD/RXD
@@ -153,10 +156,10 @@ int main(void)
   P2OUT &= ~BIT3;
   P2DIR |= BIT4;
   P2OUT &= ~BIT4;
-  
+
 #ifdef FDMA
   // Frequency agility
-  mrfiSpiWriteReg(PATABLE,TPL);// Tx power
+  mrfiSpiWriteReg(PATABLE,0xFF);// Tx power
   mrfiSpiWriteReg(MDMCFG1,0x23);
   mrfiSpiWriteReg(MDMCFG0,0xF8);// 400kHz channel spacing
   mrfiSpiWriteReg(FREQ2,0x5C);
@@ -171,10 +174,10 @@ int main(void)
   // | MAC ID (4xbytes) | Xn@WSP (2xbytes) |
   // |-------------------------------------|
   packet_uframe.frame[0] = 8 + 13;
-  packet_uframe.frame[9] = mac_addr[0];
-  packet_uframe.frame[10] = mac_addr[1];
-  packet_uframe.frame[11] = mac_addr[2];
-  packet_uframe.frame[12] = mac_addr[3];
+  packet_uframe.frame[9] = mac_addr[2];
+//  packet_uframe.frame[10] = mac_addr[1];
+ //packet_uframe.frame[11] = mac_addr[2];
+//  packet_uframe.frame[12] = mac_addr[3];
   
   // Initialize TimerA & TimerB
   // set LFXT1 to the VLO @ 12kHz
@@ -183,8 +186,9 @@ int main(void)
   // 1060;  //slow timeout, ~100msec
   TBCTL = MC_0;
   TBCCTL0 = 0;
-  TBCCR0 = FAST_3MSEC;//10MSEC;               // 41781; //(16-bit, <65535);41781;//41781; //fast timeout, ~10msec
-  
+  TBCCR0 = FAST_3MSEC;//10MSEC;
+  // 41781; //(16-bit, <65535);41781;//41781; //fast timeout, ~10msec
+  start_timer();
   // Initialize light sensor (APDS9004)
   P4OUT &= ~BIT5;
   P4REN |= BIT5;                              // enable IN14 pull-down resistor
@@ -216,35 +220,33 @@ int main(void)
   P1OUT |= 0x01;
   // Enter low-power listen
   // start_slow_timeout();
+ 
   
+  start_time = timer;
   while (1) {
     //get_lux_reading_repeat();
     if(bit_count > 31){
       bit_count = 0;
       packet_data = 0;
+      start_time = timer;
     }
     read_pir();
     create_packet(bit_count);
+    time = timer;
     bit_count++;
     
-    if( timer_ack == 1){
+
       
       
       if(bit_count > 31 ){
-       
-//        if(count % 60 == 0){
-//          P1OUT ^= 0x02;
-//          transmit_sync_packet();
-//        }else{
-          
-          tx_to_ap();
-          //low_power_delay(LPD_100MSEC);
-//        }
-//         count++;
-      }
+         
+          tx_to_ap(start_time,time);
+
+      }else{
       
-      low_power_delay(LPD_50MSEC);
-    }
+      low_power_delay(LPD_100MSEC);
+      }
+    
   }
 }
 
@@ -273,7 +275,7 @@ void start_timer()
   //  pause_low_power_delay();
   P1OUT |= 0x01;
   //Enable Interrupts on Timer
-  TACCR0 = 106;	//Number of cycles in the timer
+  TACCR0 = 11;	//Number of cycles in the timer
   TACTL = TASSEL_1 + MC_1; //TASSEL_1 use aclk as source of timer MC_1 use up mode timer
   //  continue_low_power_delay();
   
@@ -284,17 +286,16 @@ void start_timer()
 
 void sync_clock(mrfiPacket_t packet_ack){
   
-  //  uint16_t t1,t2,t3,t4,delta;
-  uint32_t t3;
-  // t1 =  (packet_ack.frame[14] |  packet_ack.frame[15]<<8);
-  // t2 =  (packet_ack.frame[18] |  packet_ack.frame[19]<<8);
-  t3 = ((packet_ack.frame[11] )|  (packet_ack.frame[12]<< 8)    |
-       (((uint32_t) packet_ack.frame[13])<< 16) | (((uint32_t) packet_ack.frame[14])<< 24));
+
+  uint32_t t;
+
+ t = ((packet_ack.frame[10] )|  (((uint32_t) packet_ack.frame[11])<< 8)    |
+         (((uint32_t) packet_ack.frame[12])<< 16) | (((uint32_t) packet_ack.frame[13])<< 24));
   
   //t4 = timer;
   //delta = (uint16_t)0.5*((t2-t1)-(t4-t3));
   TACTL = MC_0;
-  timer = t3 ;
+  timer = t ;
   TACTL = TASSEL_1 + MC_1;
   
   
@@ -302,21 +303,23 @@ void sync_clock(mrfiPacket_t packet_ack){
 
 
 
-uint8_t tx_to_ap()
+uint8_t tx_to_ap(uint32_t start_time,uint32_t end_time)
 {
-  // TODO: insert PIR sensor output (motion_detected) into packet
+ 
   
-  //  P1OUT &= ~0x02; 
-  packet_uframe.frame[9] = 169;
+  
+  packet_uframe.frame[10] = start_time & 0xff;  
+  packet_uframe.frame[11] = (start_time>>8) & 0xff ;  
+  packet_uframe.frame[12] = (start_time>>16) & 0xff;
   packet_uframe.frame[13] = packet_no++;
   packet_uframe.frame[14] = packet_data & 0xff;  
   packet_uframe.frame[15] = (packet_data>>8) & 0xff ;  
   packet_uframe.frame[16] = (packet_data>>16) & 0xff;
   packet_uframe.frame[17] = (packet_data>>24) & 0xff;
-  packet_uframe.frame[18] = timer & 0xff;  
-  packet_uframe.frame[19] = (timer>>8) & 0xff ;  
-  packet_uframe.frame[20] = (timer>>16) & 0xff;
-  packet_uframe.frame[21] = (timer>>24) & 0xff;
+  packet_uframe.frame[18] = end_time & 0xff;  
+  packet_uframe.frame[19] = (end_time>>8) & 0xff ;  
+  packet_uframe.frame[20] = (end_time>>16) & 0xff;
+  packet_uframe.frame[21] = (end_time>>24) & 0xff;
   
   
   
@@ -400,14 +403,7 @@ void MRFI_RxCompleteISR()
   mrfiPacket_t packet_ack;
   MRFI_Receive(&packet_ack);
   MRFI_Sleep();
-  
-  
-  if(packet_ack.frame[9] == START_PACKET & timer_ack == 0 ){
-    start_timer();
-    timer_ack = 1;
-    
-  }
-  if(packet_ack.frame[9] == SYNC_PACKET){
+   if(packet_ack.frame[9] == SYNC_PACKET){
     sync_clock(packet_ack);
   }
   
