@@ -7,6 +7,7 @@
 // #define TO_TERMINAL
 #define FDMA
 
+
 // define a set of available channels
 // case 11: mrfiSpiWriteReg(CHANNR,0x00); break;
 // case 12: mrfiSpiWriteReg(CHANNR,0x0D); break;

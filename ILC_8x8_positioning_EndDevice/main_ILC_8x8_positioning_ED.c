@@ -56,11 +56,11 @@ uint8_t fast_decrease_cnt = 0;
 volatile uint8_t batt_below_3V = 0;
 uint16_t count = 0;
 volatile uint8_t currentTs = TS1SEC;
-uint8_t mac_addr[4] = {169,175,4,43};
+uint8_t mac_addr= 1;
 uint8_t bit_count = 0;
 uint16_t tic_sec = 0;
 uint8_t isSynced = 0;
-
+uint8_t start;
 
 // functions declared
 
@@ -174,7 +174,7 @@ int main(void)
   // | MAC ID (4xbytes) | Xn@WSP (2xbytes) |
   // |-------------------------------------|
   packet_uframe.frame[0] = 8 + 13;
-  packet_uframe.frame[9] = mac_addr[2];
+  packet_uframe.frame[9] = mac_addr;
 //  packet_uframe.frame[10] = mac_addr[1];
  //packet_uframe.frame[11] = mac_addr[2];
 //  packet_uframe.frame[12] = mac_addr[3];
@@ -221,10 +221,12 @@ int main(void)
   // Enter low-power listen
   // start_slow_timeout();
  
-  
+ 
   start_time = timer;
   while (1) {
     //get_lux_reading_repeat();
+//    if(start==1){ 
+      
     if(bit_count > 31){
       bit_count = 0;
       packet_data = 0;
@@ -246,6 +248,7 @@ int main(void)
       
       low_power_delay(LPD_100MSEC);
       }
+    
     
   }
 }
@@ -275,7 +278,7 @@ void start_timer()
   //  pause_low_power_delay();
   P1OUT |= 0x01;
   //Enable Interrupts on Timer
-  TACCR0 = 11;	//Number of cycles in the timer
+  TACCR0 = 9;	//Number of cycles in the timer
   TACTL = TASSEL_1 + MC_1; //TASSEL_1 use aclk as source of timer MC_1 use up mode timer
   //  continue_low_power_delay();
   
@@ -306,7 +309,7 @@ void sync_clock(mrfiPacket_t packet_ack){
 uint8_t tx_to_ap(uint32_t start_time,uint32_t end_time)
 {
  
-  
+  uint8_t retransmit_number=0;
   
   packet_uframe.frame[10] = start_time & 0xff;  
   packet_uframe.frame[11] = (start_time>>8) & 0xff ;  
@@ -325,15 +328,19 @@ uint8_t tx_to_ap(uint32_t start_time,uint32_t end_time)
   
   
   // hop to public channel and send dn to AP (pseudo distributed protocol)
-  //  do {
+  //retransmit 5 times 
+  
+    do {
   
   
   cca_tx_success = nac_mrfi_tx_cca(&packet_uframe, PCH/*GCH*/);
   // keep RxOn and wait for ack
-  //__delay_cycles(1e6);
-  
-  
-  //  } while (cca_tx_success != 1 || ack_flag != 1);
+  __delay_cycles(1e6);
+  if(retransmit_number>5){
+        break;
+   }
+  retransmit_number++;
+    } while (cca_tx_success != 1 || ack_flag != 1);
   
   
   cca_tx_success = 0;
@@ -347,7 +354,7 @@ void transmit_sync_packet(){
   //  P1OUT &= ~0x02; 
   sync_packet.frame[0] = 8+8;
   sync_packet.frame[9] = SYNC_PACKET;
-  sync_packet.frame[14] = mac_addr[2];
+  sync_packet.frame[14] = mac_addr;
   sync_packet.frame[15] = 0;
   sync_packet.frame[10] = timer & 0xff;  
   sync_packet.frame[11] = (timer>>8) & 0xff ;  
@@ -403,7 +410,11 @@ void MRFI_RxCompleteISR()
   mrfiPacket_t packet_ack;
   MRFI_Receive(&packet_ack);
   MRFI_Sleep();
+   if (packet_ack.frame[9] == mac_addr) {
+    ack_flag = 1;
+  }
    if(packet_ack.frame[9] == SYNC_PACKET){
+    
     sync_clock(packet_ack);
   }
   

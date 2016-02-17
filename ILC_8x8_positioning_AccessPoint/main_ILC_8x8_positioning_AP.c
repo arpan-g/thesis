@@ -31,7 +31,7 @@ int16_t dn = 0;
 uint8_t pid_iter = 0;
 uint8_t counter = MAX_TRY;
 uint8_t enable_low_power_delay = 0;
-uint8_t matlab_connected = 0;
+uint8_t matlab_connected = 1;
 uint8_t send_packet = 0;
 volatile uint32_t timer;
 
@@ -98,6 +98,7 @@ int main(void)
 {
     // Initialize board
     BSP_Init();
+ 
 
 #ifdef TO_TERMINAL
     // Initialize UART
@@ -116,6 +117,8 @@ int main(void)
     mrfiSpiWriteReg(PATABLE,TPL);// Tx power
     mrfiSpiWriteReg(MDMCFG1,0x23);
     mrfiSpiWriteReg(MDMCFG0,0xF8);// 400kHz channel spacing
+//    mrfiSpiWriteReg(MDMCFG3,0x3B);//Tx rate is set to 20kBaud
+//    mrfiSpiWriteReg(MDMCFG4,0x0C);
     mrfiSpiWriteReg(FREQ2,0x5C);
     mrfiSpiWriteReg(FREQ1,0x80);
     mrfiSpiWriteReg(FREQ0,0x00);  // 2.405GHz base frequency
@@ -126,11 +129,11 @@ int main(void)
     BCSCTL3 |= LFXT1S_2;
     // TACTL=MC_0; TACCTL0=0; TACCR0=1060;  //slow timeout, ~100msec
     // TBCTL=MC_0; TBCCTL0=0; TBCCR0=41781; //fast timeout, ~10msec
-/*    
+    
     MRFI_WakeUp();
     MRFI_RxOn();
     mrfiSpiWriteReg(CHANNR,MCH);
-*/
+
  BCSCTL3 |= LFXT1S_2;
   TACCR0 = 11;	//Number of cycles in the timer
   TACTL = TASSEL_1 + MC_1;
@@ -201,7 +204,7 @@ void MRFI_RxCompleteISR()
     return;
     }
 
-   
+    MRFI_Transmit(&packet_dn, MRFI_TX_TYPE_FORCED);
 
       
     // __delay_cycles(1000);
@@ -378,11 +381,11 @@ __interrupt void interrupt_slow_timeout (void)
   //P1OUT ^= 0x02;
   timer++;
   
-  if(timer % 1000 == 0 ){
-    transmit_sync_packet();
-	  
-  }
-  
+//  if(timer % 1000 == 0 ){
+//    transmit_sync_packet();
+//	  
+//  }
+//  
   
   
 }
