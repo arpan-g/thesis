@@ -56,7 +56,7 @@ uint8_t fast_decrease_cnt = 0;
 volatile uint8_t batt_below_3V = 0;
 uint16_t count = 0;
 volatile uint8_t currentTs = TS1SEC;
-uint8_t mac_addr= 1;
+uint8_t mac_addr= 4;
 uint8_t bit_count = 0;
 uint16_t tic_sec = 0;
 uint8_t isSynced = 0;
@@ -109,7 +109,7 @@ void low_power_delay(uint16_t tic)
   __bis_SR_register(LPM3_bits + GIE);       // Enter LPM3
   TBCTL &= ~(MC_1);                         // Stop Timer B
   TBCCR0 = TimerTemp;
-  TACCTL0 |= CCIE;
+ 
   // P2IFG &= ~0x02;                           // FIXED: P2.1 IFG cleared
   // P2IE |= 0x02;                             // P2.1 interrupt enabled
   occupancy_timeout = occupancy_timeout + tic;
@@ -278,8 +278,8 @@ void start_timer()
   //  pause_low_power_delay();
   P1OUT |= 0x01;
   //Enable Interrupts on Timer
-  TACCR0 = 9;	//Number of cycles in the timer
-  TACTL = TASSEL_1 + MC_1; //TASSEL_1 use aclk as source of timer MC_1 use up mode timer
+  TACCR0 = 8000;	//Number of cycles in the timer
+  TACTL = TASSEL_2 + MC_1; //TASSEL_1 use aclk as source of timer MC_1 use up mode timer
   //  continue_low_power_delay();
   
   
@@ -299,7 +299,7 @@ void sync_clock(mrfiPacket_t packet_ack){
   //delta = (uint16_t)0.5*((t2-t1)-(t4-t3));
   TACTL = MC_0;
   timer = t ;
-  TACTL = TASSEL_1 + MC_1;
+  TACTL = TASSEL_2 + MC_1;
   
   
 }

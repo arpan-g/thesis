@@ -1,32 +1,14 @@
-"C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\main_ILC_8x8_positioning_ED.c"
--std=c++98
+"C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\bsp\bsp.c"
+-std=c99
 -ferror-limit=100
--I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\..\drivers\bsp
--I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\..\drivers\bsp\drivers
--I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\..\drivers\bsp\boards\EZ430RF
--I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\ILC_8x8_positioning_EndDevice\..\drivers\mrfi
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\inc\dlib
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\inc\dlib\c
--I
-C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\430\inc\dlib\ecpp
--I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\bsp
--I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\bsp\drivers
--I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\bsp\boards\EZ430RF
--I
-C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\thesis\drivers\mrfi
--DMRFI_CC2500=1
--D__MSP430F2274__=1
+-DNDEBUG=1
+-D__MSP430GENERIC__=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0
@@ -223,14 +205,10 @@ C:\arpan\Thesis\occupancySensor\Shuai_sensor_demo_code\Shuai_sensor_demo_code\th
 -D__HAS_LOCATED_DECLARATION__=1
 -D__IAR_COMPILERBASE__=593669
 -D__DATE__="Feb 17 2016"
--D__TIME__="19:54:59"
+-D__TIME__="15:26:31"
 -D__STDC__=1
--D__cplusplus=199711L
--D__iar_extended_embedded_cplusplus=1
--D__embedded_cplusplus=1
--D__WCHAR_T=1
--D__BOOL=1
--D__ARRAY_OPERATORS=1
+-D__STDC_VERSION__=199901L
+-D__STDC_HOSTED__=1
 -D__EDG_TYPE_TRAITS_ENABLED=1
 -D__EDG__=1
 -D__EDG_VERSION__=403

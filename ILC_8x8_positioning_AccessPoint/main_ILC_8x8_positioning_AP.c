@@ -135,8 +135,8 @@ int main(void)
     mrfiSpiWriteReg(CHANNR,MCH);
 
  BCSCTL3 |= LFXT1S_2;
-  TACCR0 = 11;	//Number of cycles in the timer
-  TACTL = TASSEL_1 + MC_1;
+  TACCR0 = 8000;	//Number of cycles in the timer
+  TACTL = TASSEL_2 + MC_1;
   //delay_msec(3000);
   CCTL0 |= CCIE; 
   _EINT();
@@ -197,6 +197,7 @@ void MRFI_RxCompleteISR()
 {
     // notice that this is Rx ISR, no need to call MRFI_RxOn
     // P1OUT |= 0x02;
+  return;
     uint32_t time;
     MRFI_Receive(&packet_dn);
     time = timer;
@@ -381,11 +382,11 @@ __interrupt void interrupt_slow_timeout (void)
   //P1OUT ^= 0x02;
   timer++;
   
-//  if(timer % 1000 == 0 ){
-//    transmit_sync_packet();
-//	  
-//  }
-//  
+  if(timer % 1000 == 0 ){
+    transmit_sync_packet();
+	  
+  }
+  
   
   
 }
