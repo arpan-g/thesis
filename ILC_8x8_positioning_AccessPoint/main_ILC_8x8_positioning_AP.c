@@ -10,6 +10,7 @@
 #include "radios/family1/mrfi_spi.h"
 #include "conf_env.h"
 // #include "calibration_function.h"
+//#define SYNC_NODE 1
 
 
 // mrfiPacket_t packet;
@@ -31,7 +32,7 @@ int16_t dn = 0;
 uint8_t pid_iter = 0;
 uint8_t counter = MAX_TRY;
 uint8_t enable_low_power_delay = 0;
-uint8_t matlab_connected = 1;
+uint8_t matlab_connected=1;
 uint8_t send_packet = 0;
 volatile uint32_t timer;
 
@@ -108,13 +109,13 @@ int main(void)
     UCA0BR1   = 0x3;
     UCA0MCTL  = UCBRS_2;                     
     UCA0CTL1 &= ~UCSWRST; // Initialize USCI state machine
-    IE2      |= UCA0RXIE; // Enable USCI_A0 RX interrupt
+    //IE2      |= UCA0RXIE; // Enable USCI_A0 RX interrupt
 #endif
     // Initialize radio interface
     MRFI_Init();
 #ifdef FDMA
     // Frequency agility
-    mrfiSpiWriteReg(PATABLE,TPL);// Tx power
+    mrfiSpiWriteReg(PATABLE,0xFF);// Tx power
     mrfiSpiWriteReg(MDMCFG1,0x23);
     mrfiSpiWriteReg(MDMCFG0,0xF8);// 400kHz channel spacing
 //    mrfiSpiWriteReg(MDMCFG3,0x3B);//Tx rate is set to 20kBaud
@@ -130,14 +131,15 @@ int main(void)
     // TACTL=MC_0; TACCTL0=0; TACCR0=1060;  //slow timeout, ~100msec
     // TBCTL=MC_0; TBCCTL0=0; TBCCR0=41781; //fast timeout, ~10msec
     
-    MRFI_WakeUp();
-    MRFI_RxOn();
-    mrfiSpiWriteReg(CHANNR,MCH);
+   MRFI_WakeUp();
+#ifndef SYNC_NODE 
+   MRFI_RxOn();
+#endif
+   mrfiSpiWriteReg(CHANNR,MCH);
 
  BCSCTL3 |= LFXT1S_2;
   TACCR0 = 8000;	//Number of cycles in the timer
   TACTL = TASSEL_2 + MC_1;
-  //delay_msec(3000);
   CCTL0 |= CCIE; 
   _EINT();
  uint8_t count =0;
@@ -178,10 +180,6 @@ void transmit_sync_packet()
   sync_packet.frame[11] = (timer>>8)  & 0xff;
   sync_packet.frame[12] = (timer>>16) & 0xff;
   sync_packet.frame[13] = (timer>>24) & 0xff;
-  MRFI_WakeUp();
-  mrfiSpiWriteReg(CHANNR, MCH);
-  MRFI_RxOn();
-  
   MRFI_Transmit(&sync_packet, MRFI_TX_TYPE_FORCED);
 }
 
@@ -197,13 +195,14 @@ void MRFI_RxCompleteISR()
 {
     // notice that this is Rx ISR, no need to call MRFI_RxOn
     // P1OUT |= 0x02;
-  return;
+  
     uint32_t time;
     MRFI_Receive(&packet_dn);
-    time = timer;
-    if( packet_dn.frame[9] == 0xFB){
+     if( packet_dn.frame[9] == 0xFB){
     return;
     }
+    time = timer;
+   
 
     MRFI_Transmit(&packet_dn, MRFI_TX_TYPE_FORCED);
 
@@ -381,11 +380,12 @@ __interrupt void interrupt_slow_timeout (void)
   
   //P1OUT ^= 0x02;
   timer++;
-  
-  if(timer % 1000 == 0 ){
+#ifdef SYNC_NODE
+  if(timer % 1023 == 0 ){
     transmit_sync_packet();
 	  
   }
+#endif
   
   
   

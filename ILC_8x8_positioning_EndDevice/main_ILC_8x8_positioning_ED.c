@@ -56,7 +56,7 @@ uint8_t fast_decrease_cnt = 0;
 volatile uint8_t batt_below_3V = 0;
 uint16_t count = 0;
 volatile uint8_t currentTs = TS1SEC;
-uint8_t mac_addr= 4;
+uint8_t mac_addr= 2;
 uint8_t bit_count = 0;
 uint16_t tic_sec = 0;
 uint8_t isSynced = 0;
@@ -89,6 +89,7 @@ void start_timer();
 void delay_msec(uint8_t miliseconds);
 void stop_timer();
 
+
 void transmit_sync_packet();
 
 void low_power_delay(uint16_t tic)
@@ -116,6 +117,12 @@ void low_power_delay(uint16_t tic)
   aid_timeout = aid_timeout + tic;
 }
 
+void delay_msec(uint8_t miliseconds)
+{
+    for (tic_sec = 0; tic_sec < miliseconds; tic_sec++) {
+        __delay_cycles(8000);
+    }
+}
 
 void Button_Init()
 {
@@ -159,7 +166,7 @@ int main(void)
 
 #ifdef FDMA
   // Frequency agility
-  mrfiSpiWriteReg(PATABLE,0xFF);// Tx power
+  mrfiSpiWriteReg(PATABLE,0xFE);// Tx power 0dBm
   mrfiSpiWriteReg(MDMCFG1,0x23);
   mrfiSpiWriteReg(MDMCFG0,0xF8);// 400kHz channel spacing
   mrfiSpiWriteReg(FREQ2,0x5C);
@@ -246,7 +253,7 @@ int main(void)
 
       }else{
       
-      low_power_delay(LPD_100MSEC);
+          delay_msec(100);
       }
     
     
@@ -279,7 +286,7 @@ void start_timer()
   P1OUT |= 0x01;
   //Enable Interrupts on Timer
   TACCR0 = 8000;	//Number of cycles in the timer
-  TACTL = TASSEL_2 + MC_1; //TASSEL_1 use aclk as source of timer MC_1 use up mode timer
+  TACTL = TASSEL_2 + MC_1; //TASSEL_2 use smclk as source of timer MC_1 use up mode timer
   //  continue_low_power_delay();
   
   
@@ -309,8 +316,8 @@ void sync_clock(mrfiPacket_t packet_ack){
 uint8_t tx_to_ap(uint32_t start_time,uint32_t end_time)
 {
  
-  uint8_t retransmit_number=0;
   
+  uint8_t retransmit_number=0;
   packet_uframe.frame[10] = start_time & 0xff;  
   packet_uframe.frame[11] = (start_time>>8) & 0xff ;  
   packet_uframe.frame[12] = (start_time>>16) & 0xff;
@@ -323,6 +330,7 @@ uint8_t tx_to_ap(uint32_t start_time,uint32_t end_time)
   packet_uframe.frame[19] = (end_time>>8) & 0xff ;  
   packet_uframe.frame[20] = (end_time>>16) & 0xff;
   packet_uframe.frame[21] = (end_time>>24) & 0xff;
+  P1OUT ^= 0x02;
   
   
   
@@ -335,7 +343,7 @@ uint8_t tx_to_ap(uint32_t start_time,uint32_t end_time)
   
   cca_tx_success = nac_mrfi_tx_cca(&packet_uframe, PCH/*GCH*/);
   // keep RxOn and wait for ack
-  __delay_cycles(1e6);
+  __delay_cycles(40000);
   if(retransmit_number>5){
         break;
    }
@@ -409,7 +417,7 @@ void MRFI_RxCompleteISR()
   
   mrfiPacket_t packet_ack;
   MRFI_Receive(&packet_ack);
-  MRFI_Sleep();
+  //MRFI_Sleep();
    if (packet_ack.frame[9] == mac_addr) {
     ack_flag = 1;
   }
@@ -440,7 +448,7 @@ void start_slow_timeout()
   // TACCR0 = SLOW_100MSEC - SLOW_1MSEC*(FRAME_LENGTH-counter);
   TACTL |= TACLR;
   TACCTL0 = CCIE;
-  TACTL = TASSEL_1 + MC_1;
+  TACTL = TASSEL_2 + MC_1;
 }
 
 
